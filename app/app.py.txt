@@ -1,0 +1,22 @@
+import streamlit as st
+import joblib
+import pandas as pd
+
+# Load vectorizer + best model (change model file if you want)
+tfidf = joblib.load("../models/tfidf.pkl")
+model = joblib.load("../models/xgb.pkl")  # or rf.pkl / lgb.pkl
+
+st.set_page_config(page_title="Amazon Review Sentiment", layout="centered")
+st.title("🧠 Amazon Review Sentiment Predictor")
+st.write("Type a review below and the model will predict sentiment.")
+
+review = st.text_area("Enter a review text:", height=150)
+
+if st.button("Predict"):
+    if review.strip() == "":
+        st.warning("Please enter a review.")
+    else:
+        X_vec = tfidf.transform([review])
+        pred = model.predict(X_vec)[0]
+        st.success(f"Predicted sentiment: **{pred}**")
+S
